@@ -13,7 +13,9 @@ async function DashboardLayout({children}) {
   return (
     <div>
       <Header/>
+      <div className='px-4 py-8'>
         {children}
+      </div>
     </div>
   )
 }
