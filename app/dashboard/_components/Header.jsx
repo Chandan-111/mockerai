@@ -18,13 +18,13 @@ useEffect(() => {
            ${path==='/' || path==='/dashboard' ? 'text-blue-600 font-bold' : ''}
            `}
           >Dashboard</li>
-          <li className={`hover:text-blue-500  hover:font-bold transition-all cursor-pointer
+          <li className={`hover:text-gray-500  hover:font-bold transition-all cursor-pointer
           ${path==='/questions' ? 'text-blue-600 font-bold' : ''}
           `}>Questions</li>
-          <li className={`hover:text-blue-500  hover:font-bold transition-all cursor-pointer
+          <li className={`hover:text-gray-500  hover:font-bold transition-all cursor-pointer
           ${path==='/upgrade' ? 'text-blue-600 font-bold' : ''}
           `}>Upgrade</li>
-          <li className={`hover:text-blue-500  hover:font-bold transition-all cursor-pointer
+          <li className={`hover:text-gray-500  hover:font-bold transition-all cursor-pointer
           ${path==='/how-it-works' ? 'text-blue-600 font-bold' : ''}
           `}>How it works</li>
         </ul>

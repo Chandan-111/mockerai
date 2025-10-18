@@ -13,9 +13,10 @@ async function DashboardLayout({children}) {
   return (
     <div>
       <Header/>
-      <div className='px-4 py-8'>
+
+        <div className='mx-5 md:mx-20 lg:mx-36'>
         {children}
-      </div>
+        </div>
     </div>
   )
 }
