@@ -14,6 +14,13 @@ import { cn } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 import SplitText from '@/components/SplitText'
 import GeminiAIModal, { ChatSession } from '@/utils/GeminiAIModal'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { db } from '@/utils/db'
+import { MockInterview } from '@/utils/schema'
+import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@clerk/nextjs'
+import { User } from '@clerk/nextjs'
+import moment from 'moment/moment'
 
 function AddNewInterview() {
   const [openDialog, setOpenDialog] = useState(false)
@@ -22,21 +29,20 @@ function AddNewInterview() {
   const [jobExperience, setJobExperience] = useState('')
   const [loading, setLoading] = useState(false)
   const [jsonResponse,setJsonResponse] = useState([])
+  const { user } = useUser()
+  
+  // Define ChatSession from Google Generative AI
+  const chatSession = new ChatSession('AIzaSyDoEmcJVlSnVvOCZ0lOtX-gBl0xBX2nYCA')
 
   const onSubmit = async(e) => {
     setLoading(true)
     e.preventDefault()
     console.log(jobPosition, jobDesc, jobExperience);
+    const InputPrompt = `Job Position: ${jobPosition}, Job Description: ${jobDesc}, Years of Experience: ${jobExperience}. 
 
-    try {
-      // Create a new chat session instance
-      const chatSession = new ChatSession('AIzaSyDoEmcJVlSnVvOCZ0lOtX-gBl0xBX2nYCA');
-      
-      const InputPrompt = `Job Position: ${jobPosition}, Job Description: ${jobDesc}, Years of Experience: ${jobExperience}. 
+IMPORTANT: Return ONLY valid JSON format. Do not include any explanatory text, comments, or additional content before or after the JSON.
 
-IMPORTANT: Return ONLY valid JSON format. Do not include any explanatory text before or after the JSON.
-
-Generate 5 interview questions with answers in this exact format:
+Generate 5 interview questions with answers in this EXACT format:
 {
   "questions": [
     {"question": "Question 1", "answer": "Answer 1"},
@@ -45,47 +51,49 @@ Generate 5 interview questions with answers in this exact format:
     {"question": "Question 4", "answer": "Answer 4"},
     {"question": "Question 5", "answer": "Answer 5"}
   ]
-}`;
-      
-      const result = await chatSession.sendMessage(InputPrompt);
-      
-      // Clean the response
-      let cleanedResponse = result;
-      
-      // Remove markdown code blocks
-      if (cleanedResponse.includes('```json')) {
-        const jsonMatch = cleanedResponse.match(/```json\s*([\s\S]*?)\s*```/);
-        if (jsonMatch) {
-          cleanedResponse = jsonMatch[1].trim();
-        } else {
-          cleanedResponse = cleanedResponse.replace('```json', '').replace('```', '').trim();
-        }
-      } else if (cleanedResponse.includes('```')) {
-        cleanedResponse = cleanedResponse.replace(/```/g, '').trim();
-      }
-      
-      // Extract JSON object from the response
-      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        cleanedResponse = jsonMatch[0];
-      }
-      
-      try {
-        const parsedJson = JSON.parse(cleanedResponse);
-        console.log(parsedJson);
-      } catch (parseError) {
-        console.error('JSON Parse Error:', parseError);
-        console.log('Cleaned response that failed to parse:', cleanedResponse);
-      }
-      
-      // Close the dialog after successful generation
-      setOpenDialog(false);
-      
-    } catch (error) {
-      console.error('Error generating interview questions:', error);
-    } finally {
-      setLoading(false);
+} 
+
+Return ONLY the JSON object above, nothing else.`;
+    const result = await chatSession.sendMessage(InputPrompt);
+    
+    // Clean the response - remove markdown code blocks
+    let MockJsonResp   = result.replace('```json', '').replace('```', '').trim();
+    
+    // Extract JSON object from the response
+    const jsonMatch = MockJsonResp.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      MockJsonResp = jsonMatch[0];
     }
+    
+    try {
+      const parsedJson = JSON.parse(MockJsonResp);
+      console.log('Successfully parsed JSON:', parsedJson);
+      setJsonResponse(parsedJson);
+    } catch (parseError) {
+      console.error('JSON Parse Error:', parseError);
+      console.log('Cleaned response that failed to parse:', MockJsonResp);
+    }
+    setJsonResponse(MockJsonResp);
+    if(MockJsonResp){
+
+    const resp = await db.insert(MockInterview).values({
+      mockId: uuidv4(),
+      jsonMockResp: MockJsonResp,
+      jobPosition: jobPosition,
+      jobDesc: jobDesc,
+      jobExperience: jobExperience,
+      createdBy: user?.primaryEmailAddress?.emailAddress,
+      createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),       
+    }).returning({mockId:MockInterview.mockId})
+    console.log("Inserted ID:",resp)
+    if(resp){
+      setOpenDialog(false)
+    }
+  }
+  else{
+    console.log("No JSON Response");
+  }
+
   }
   return (
     <div>
