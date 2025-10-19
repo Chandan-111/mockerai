@@ -19,7 +19,9 @@ const SplitText = ({
   rootMargin = '-100px',
   textAlign = 'center',
   tag = 'p',
-  onLetterAnimationComplete
+  onLetterAnimationComplete,
+  loop = false,
+  loopDelay = 2000
 }) => {
   const ref = useRef(null);
   const animationCompletedRef = useRef(false);
@@ -86,13 +88,38 @@ const SplitText = ({
           scrollTrigger: {
             trigger: el,
             start,
-            once: true,
+            once: !loop,
             fastScrollEnd: true,
             anticipatePin: 0.4
           },
           onComplete: () => {
             animationCompletedRef.current = true;
             onLetterAnimationComplete?.();
+            
+            // Loop animation if enabled
+            if (loop) {
+              setTimeout(() => {
+                gsap.set(targets, { ...from });
+                gsap.to(targets, {
+                  ...to,
+                  duration,
+                  ease,
+                  stagger: delay / 1000,
+                  onComplete: () => {
+                    // Restart the loop
+                    setTimeout(() => {
+                      gsap.set(targets, { ...from });
+                      gsap.to(targets, {
+                        ...to,
+                        duration,
+                        ease,
+                        stagger: delay / 1000
+                      });
+                    }, loopDelay);
+                  }
+                });
+              }, loopDelay);
+            }
           },
           willChange: 'transform, opacity',
           force3D: true
@@ -126,7 +153,9 @@ const SplitText = ({
       threshold,
       rootMargin,
       fontsLoaded,
-      onLetterAnimationComplete
+      onLetterAnimationComplete,
+      loop,
+      loopDelay
     ],
     scope: ref
   });
