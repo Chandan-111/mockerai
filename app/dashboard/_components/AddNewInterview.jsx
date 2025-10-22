@@ -44,7 +44,7 @@ function AddNewInterview() {
 
 IMPORTANT: Return ONLY valid JSON format. Do not include any explanatory text, comments, or additional content before or after the JSON.
 
-Generate 5 interview questions based on the job position, job description and years of experience with answers in this EXACT format:
+Generate 5 interview questions and their answers (and make it 2-3 lines) based on the job position, job description and years of experience with answers in this EXACT format:
 {
   "questions": [
     {"question": "Question 1", "answer": "Answer 1"},
