@@ -54,10 +54,6 @@ function Feedback({params}) {
        <h2 className='text-lg my-2 text-blue-500 font-bold'>Your overall rating : <strong>{averageRating}/10</strong></h2>
        <h2 className='text-grey'>Find below the interview questions with correct answers and your answers with feedback for improvement.</h2>
        
-      
-
-        <h2 className='text-lg my-2 text-blue-500 font-bold'>Your overall rating : <strong>{averageRating}/10</strong></h2>
-      <h2 className='text-grey'>Find below the interview questions with correct answers and your answers with feedback for improvement.</h2>
       {feedbackList&&feedbackList.map((item,index)=>(
       <Collapsible key={index}>
   <CollapsibleTrigger className='p-4 bg-gray-100 rounded-full my-3 text-left flex justify-between items-center hover:bg-gray-200 transition-colors cursor-pointer group'>

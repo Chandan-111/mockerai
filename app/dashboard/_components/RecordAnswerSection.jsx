@@ -82,7 +82,7 @@ function RecordAnswerSection({mockInterviewQuestion, activeQuestionIndex, interv
   React.useEffect(() => {
     if (transcript) {
       setResults(transcript)
-      setUserAnswer(prevAns => prevAns+ transcript)
+      setUserAnswer(transcript)
     }
   }, [transcript, results]);
 
