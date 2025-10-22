@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@clerk/nextjs'
 import { User } from '@clerk/nextjs'
 import moment from 'moment/moment'
+import { useRouter } from 'next/navigation'
 
 function AddNewInterview() {
   const [openDialog, setOpenDialog] = useState(false)
@@ -30,6 +31,7 @@ function AddNewInterview() {
   const [loading, setLoading] = useState(false)
   const [jsonResponse,setJsonResponse] = useState([])
   const { user } = useUser()
+  const router = useRouter()
   
   // Define ChatSession from Google Generative AI
   const chatSession = new ChatSession('AIzaSyDoEmcJVlSnVvOCZ0lOtX-gBl0xBX2nYCA')
@@ -42,17 +44,17 @@ function AddNewInterview() {
 
 IMPORTANT: Return ONLY valid JSON format. Do not include any explanatory text, comments, or additional content before or after the JSON.
 
-Generate 5 interview questions with answers in this EXACT format:
+Generate 5 interview questions based on the job position, job description and years of experience with answers in this EXACT format:
 {
   "questions": [
     {"question": "Question 1", "answer": "Answer 1"},
     {"question": "Question 2", "answer": "Answer 2"},
     {"question": "Question 3", "answer": "Answer 3"},
     {"question": "Question 4", "answer": "Answer 4"},
-    {"question": "Question 5", "answer": "Answer 5"}
+    {"question": "Question 5", "answer": "Answer 5"},
+    ...
   ]
 } 
-
 Return ONLY the JSON object above, nothing else.`;
     const result = await chatSession.sendMessage(InputPrompt);
     
@@ -88,6 +90,7 @@ Return ONLY the JSON object above, nothing else.`;
     console.log("Inserted ID:",resp)
     if(resp){
       setOpenDialog(false)
+      router.push(`/dashboard/interview/${resp[0].mockId}`)
     }
   }
   else{
@@ -101,13 +104,14 @@ Return ONLY the JSON object above, nothing else.`;
       hover:shadow-lg transition-all cursor-pointer transition-all'>
         <div onClick={() => setOpenDialog(true)} className="cursor-pointer text-center font-bold">
           <SplitText
-            text="+ NEW INTERVIEW"
+            text="+ NEW INTERVIEW" 
             tag="h2"
             delay={50}
             duration={0.8} loop={true} loopDelay={2000}
             from={{ opacity: 0, y: 20, rotationX: 90 }}
             to={{ opacity: 1, y: 0, rotationX: 0 }}
-            splitType="words"
+            splitType="words" 
+            className="text-gray-500 hover:text-gray-300"
           />
         </div>
         <h1 className='text-center text-gray-500'>Buckle up</h1>
