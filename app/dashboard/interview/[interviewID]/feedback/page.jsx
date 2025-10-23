@@ -44,40 +44,55 @@ function Feedback({params}) {
     }
   }, [resolvedParams?.interviewID])
   return (
-    <div className='p-10'>
-      <h2 className='text-3xl font-bold text-green-500' ><ShinyText variant="gold">Congratulation!</ShinyText></h2>
-      <h2 className='font-bold text-2xl my-2'>Here is your feedback for the interview.</h2>
+    <div className='p-10 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800'>
+      <div className='frosted-card rounded-2xl p-8 mb-8'>
+        <h2 className='text-4xl font-bold text-green-400 text-center mb-4'><ShinyText variant="gold">Congratulations!</ShinyText></h2>
+        <h2 className='font-bold text-2xl my-2 text-white text-center'>Here is your feedback for the interview.</h2>
+      </div>
+      
        {feedbackList?.length==0?
-       <h2 className='text-grey-500 font-bold'>No feedback found</h2>
+       <div className='frosted-glass rounded-xl p-8 text-center'>
+         <h2 className='text-gray-300 font-bold text-xl'>No feedback found</h2>
+       </div>
        :
        <>
-       <h2 className='text-lg my-2 text-blue-500 font-bold'>Your overall rating : <strong>{averageRating}/10</strong></h2>
-       <h2 className='text-grey'>Find below the interview questions with correct answers and your answers with feedback for improvement.</h2>
+       <div className='frosted-card rounded-xl p-6 mb-8'>
+         <h2 className='text-xl my-2 text-blue-400 font-bold text-center'>Your overall rating : <strong className='text-yellow-400'>{averageRating}/10</strong></h2>
+         <h2 className='text-gray-300 text-center'>Find below the interview questions with correct answers and your answers with feedback for improvement.</h2>
+       </div>
        
       {feedbackList&&feedbackList.map((item,index)=>(
       <Collapsible key={index}>
-  <CollapsibleTrigger className='p-4 bg-gray-100 rounded-full my-3 text-left flex justify-between items-center hover:bg-gray-200 transition-colors cursor-pointer group'>
-    <div className='flex items-center gap-3'>
-      <div className='bg-blue-500 text-white rounded-full p-2 flex items-center justify-center text-sm font-bold shadow-md'>
+  <CollapsibleTrigger className='frosted-card p-6 rounded-2xl my-4 text-left flex justify-between items-center hover:shadow-2xl transition-all duration-300 cursor-pointer group'>
+    <div className='flex items-center gap-4'>
+      <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold shadow-lg'>
         {index + 1}
       </div>
-      <span className='text-gray-800 font-medium group-hover:text-blue-600 transition-colors'>
+      <span className='text-white font-medium group-hover:text-blue-300 transition-colors text-lg'>
         {item.question}
       </span>
     </div>
-    <ChevronsUpDownIcon className='h-4 w-4 text-gray-500 group-hover:text-blue-500 transition-colors'/>
+    <ChevronsUpDownIcon className='h-6 w-6 text-gray-400 group-hover:text-blue-400 transition-colors'/>
   </CollapsibleTrigger>
   <CollapsibleContent>  
-  <div className=''>
-  <h2 className='text-md text-blue-500 border-rounded-lg '>Rating : <strong>{item.rating}/10</strong></h2>
-  <h2 className='border border-grey-500 rounded-lg pl-2 bg-red-50 mt-2'><strong className='text-md text-red-800 pr-2'>User Answer : </strong><span className='text-red-700 text-semibold font-medium'>{item.userAns}</span></h2>
-  <h2 className='border border-grey-500 rounded-lg pl-2 bg-green-50 mt-2'><strong className='text-md text-green-800 pr-2'>Correct Answer : </strong><span className='text-green-700 text-semibold font-medium'>{item.correctAns}</span></h2>
+  <div className='frosted-glass rounded-xl p-6 mt-4'>
+  <h2 className='text-lg text-blue-400 mb-4'>Rating : <strong className='text-yellow-400'>{item.rating}/10</strong></h2>
+  <div className='frosted-glass-dark rounded-lg p-4 mb-4'>
+    <strong className='text-red-300 text-lg pr-2'>Your Answer : </strong>
+    <span className='text-red-200 text-semibold font-medium'>{item.userAns}</span>
+  </div>
+  <div className='frosted-glass-dark rounded-lg p-4'>
+    <strong className='text-green-300 text-lg pr-2'>Correct Answer : </strong>
+    <span className='text-green-200 text-semibold font-medium'>{item.correctAns}</span>
+  </div>
     </div>
   </CollapsibleContent>
 </Collapsible>
       ))}
       </>}
-      <Button className='mt-4 flex justify-center cursor-pointer'  onClick={()=>router.push('/dashboard') }>Go to Dashboard</Button>
+      <div className='text-center mt-8'>
+        <Button className='frosted-button px-8 py-3 text-lg font-semibold text-white border-white/20 hover:bg-white/20' onClick={()=>router.push('/dashboard')}>Go to Dashboard</Button>
+      </div>
       </div>
   )
 }

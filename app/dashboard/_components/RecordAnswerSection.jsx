@@ -89,37 +89,39 @@ function RecordAnswerSection({mockInterviewQuestion, activeQuestionIndex, interv
 
   return (
     <div className='flex flex-col items-center justify-center mt-2'>
-      <div className='relative flex flex-col items-center justify-center rounded-lg p-4 size-100 bg-black/96'>
+      <div className='frosted-card relative flex flex-col items-center justify-center rounded-xl p-6 size-100'>
         {!isActive && (
           <Image 
             src={'/webcam.png'} 
             alt="Activate webcam"
             width={200} 
             height={200}
-            className='cursor-pointer'
+            className='cursor-pointer filter brightness-0 invert'
             onClick={() => setIsActive(true)}
           />
         )}
         {isActive && (
           <ReactWebcam 
             mirrored
-            style={{ width: '100%', height: '100%', borderRadius: '0.5rem' }}
+            style={{ width: '100%', height: '100%', borderRadius: '0.75rem' }}
           />
         )}
       </div>
       <Button 
         variant="outline" 
-        className='mt-2 w-30' 
+        className='frosted-button mt-4 w-40 text-white border-white/20 hover:bg-white/20' 
         onClick={SaveUserAnswer}
       >
         {listening ? 'Stop Recording' : 'Start Recording'}
       </Button>
-        <Button variant="outline" className='mt-2 w-30' onClick={() => {
+        <Button variant="outline" className='frosted-button mt-2 w-40 text-white border-white/20 hover:bg-white/20' onClick={() => {
           resetTranscript();
           setUserAnswer('');
         }}>Reset</Button>
-        <p>Microphone: {listening ? 'on' : 'off'}</p>
-        <p>Live: {transcript}</p>  
+        <div className='frosted-glass rounded-lg p-3 mt-4 text-center'>
+          <p className='text-white font-semibold'>Microphone: {listening ? 'on' : 'off'}</p>
+          <p className='text-gray-300 mt-2'>Live: {transcript}</p>
+        </div>
     </div>
   );
 }

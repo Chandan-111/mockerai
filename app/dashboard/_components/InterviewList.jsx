@@ -23,9 +23,11 @@ useEffect(() => {
   }
   return (
     <div>
-    <h2 className='text-2xl font-bold mt-5'>Previous Interviews</h2>
+    <div className='frosted-card rounded-xl p-6 mb-6'>
+      <h2 className='text-3xl font-bold text-white'>Previous Interviews</h2>
+    </div>
 
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5'>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5'>
       {interviewList&&interviewList.map((interview,index)=>(
         <InterviewItemCard key={index} interview={interview}/>
       ))}
