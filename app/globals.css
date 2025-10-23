@@ -133,7 +133,7 @@
   
   /* Dark theme by default */
   html {
-    @apply dark;
+    color-scheme: dark;
   }
   
   /* Frosted glass effects */
