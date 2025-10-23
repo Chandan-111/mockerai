@@ -91,7 +91,7 @@ function Feedback({params}) {
       ))}
       </>}
       <div className='text-center mt-8'>
-        <Button className='frosted-button px-8 py-3 text-lg font-semibold text-white border-white/20 hover:bg-white/20' onClick={()=>router.push('/dashboard')}>Go to Dashboard</Button>
+        <Button className='frosted-button px-8 py-3 text-lg font-semibold border-white/20 hover:bg-white/20' onClick={()=>router.push('/dashboard')}>Go to Dashboard</Button>
       </div>
       </div>
   )

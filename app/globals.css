@@ -165,11 +165,14 @@
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
+    color: #1a1a1a !important;
+    font-weight: 600;
   }
   
   .frosted-button:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    color: #000000 !important;
   }
 }

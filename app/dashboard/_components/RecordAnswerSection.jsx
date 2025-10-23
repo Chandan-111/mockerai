@@ -109,12 +109,12 @@ function RecordAnswerSection({mockInterviewQuestion, activeQuestionIndex, interv
       </div>
       <Button 
         variant="outline" 
-        className='frosted-button mt-4 w-40 text-white border-white/20 hover:bg-white/20' 
+        className='frosted-button mt-4 w-40 border-white/20 hover:bg-white/20' 
         onClick={SaveUserAnswer}
       >
         {listening ? 'Stop Recording' : 'Start Recording'}
       </Button>
-        <Button variant="outline" className='frosted-button mt-2 w-40 text-white border-white/20 hover:bg-white/20' onClick={() => {
+        <Button variant="outline" className='frosted-button mt-2 w-40 border-white/20 hover:bg-white/20' onClick={() => {
           resetTranscript();
           setUserAnswer('');
         }}>Reset</Button>
