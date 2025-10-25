@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "@/components/ui/sonner";
+import LightRays from "@/components/LightRays";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +30,25 @@ export default function RootLayout({ children }) {
     > 
       <html lang="en" className="dark">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <Toaster/>
-          {children}
+          <LightRays 
+            raysOrigin="top-center"
+            raysColor="#ffffff"
+            raysSpeed={1}
+            lightSpread={0.3}
+            rayLength={2}
+            pulsating={true}
+            fadeDistance={1.0}
+            saturation={0.8}
+            followMouse={true}
+            mouseInfluence={0.05}
+            noiseAmount={0.02}
+            distortion={0.0}
+            className="light-rays-container"
+          />
+          <div className="content-above-rays">
+            <Toaster/>
+            {children}
+          </div>
         </body>
       </html>
     </ClerkProvider>

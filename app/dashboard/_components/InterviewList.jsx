@@ -23,7 +23,7 @@ useEffect(() => {
   }
   return (
     <div>
-    <div className='frosted-card rounded-xl p-6 mb-6'>
+    <div className=' rounded-xl p-6 mb-6'>
       <h2 className='text-3xl font-bold text-white'>Previous Interviews</h2>
     </div>
 

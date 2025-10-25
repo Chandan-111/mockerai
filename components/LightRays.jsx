@@ -1,3 +1,4 @@
+"use client"
 import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
 import './LightRays.css';
@@ -35,14 +36,14 @@ const LightRays = ({
   raysOrigin = 'top-center',
   raysColor = DEFAULT_COLOR,
   raysSpeed = 1,
-  lightSpread = 1,
+  lightSpread = 0.3,
   rayLength = 2,
   pulsating = false,
   fadeDistance = 1.0,
   saturation = 1.0,
   followMouse = true,
-  mouseInfluence = 0.1,
-  noiseAmount = 0.0,
+  mouseInfluence = 0.05,
+  noiseAmount = 0.02,
   distortion = 0.0,
   className = ''
 }) => {
@@ -144,9 +145,11 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
   vec2 dirNorm = normalize(sourceToCoord);
   float cosAngle = dot(dirNorm, rayRefDirection);
 
-  float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2;
+  // Make rays more straight by reducing distortion
+  float straightAngle = cosAngle;
   
-  float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001));
+  // Sharp falloff for straight rays
+  float spreadFactor = pow(max(straightAngle, 0.0), 8.0 / max(lightSpread, 0.001));
 
   float distance = length(sourceToCoord);
   float maxDistance = iResolution.x * rayLength;
@@ -155,9 +158,9 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
   float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0);
   float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0;
 
+  // Simplified strength calculation for straight rays
   float baseStrength = clamp(
-    (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) +
-    (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)),
+    (0.8 + 0.2 * sin(straightAngle * seedA + iTime * speed * 0.5)),
     0.0, 1.0
   );
 
@@ -167,31 +170,46 @@ float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y);
   
+  // Only show rays from top origins (filter out bottom rays)
+  bool isTopRay = (rayDir.y > 0.0); // Only rays pointing downward (from top)
+  
+  if (!isTopRay) {
+    fragColor = vec4(0.0);
+    return;
+  }
+  
   vec2 finalRayDir = rayDir;
   if (mouseInfluence > 0.0) {
     vec2 mouseScreenPos = mousePos * iResolution.xy;
     vec2 mouseDirection = normalize(mouseScreenPos - rayPos);
-    finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence));
+    finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence * 0.3));
   }
 
+  // Create multiple straight rays with slight variations
   vec4 rays1 = vec4(1.0) *
                rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349,
-                           1.5 * raysSpeed);
+                           1.0 * raysSpeed);
   vec4 rays2 = vec4(1.0) *
                rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234,
-                           1.1 * raysSpeed);
+                           0.8 * raysSpeed);
+  vec4 rays3 = vec4(1.0) *
+               rayStrength(rayPos, finalRayDir, coord, 15.1234, 8.4567,
+                           1.2 * raysSpeed);
 
-  fragColor = rays1 * 0.5 + rays2 * 0.4;
+  // Combine rays for more realistic straight light
+  fragColor = rays1 * 0.6 + rays2 * 0.3 + rays3 * 0.2;
 
+  // Reduce noise for cleaner straight rays
   if (noiseAmount > 0.0) {
-    float n = noise(coord * 0.01 + iTime * 0.1);
-    fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n);
+    float n = noise(coord * 0.005 + iTime * 0.05);
+    fragColor.rgb *= (1.0 - noiseAmount * 0.5 + noiseAmount * 0.5 * n);
   }
 
+  // More realistic brightness falloff for straight rays
   float brightness = 1.0 - (coord.y / iResolution.y);
-  fragColor.x *= 0.1 + brightness * 0.8;
-  fragColor.y *= 0.3 + brightness * 0.6;
-  fragColor.z *= 0.5 + brightness * 0.5;
+  fragColor.x *= 0.2 + brightness * 0.7;
+  fragColor.y *= 0.4 + brightness * 0.5;
+  fragColor.z *= 0.6 + brightness * 0.4;
 
   if (saturation != 1.0) {
     float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114));

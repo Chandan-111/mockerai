@@ -18,8 +18,8 @@ function InterviewItemCard({interview}) {
       <h3 className='text-sm text-gray-300 font-semibold mb-2'>Experience: {interview?.jobExperience}</h3>
       <h3 className='text-xs text-gray-400'>Created: {interview?.createdAt}</h3>
       <div className='flex gap-2 mt-3'>
-        <Button className='flex-1 cursor-pointer frosted-button border-white/20 hover:bg-white/20' variant='outline' onClick={onFeedback}>View Interview</Button>
-         <Button className='flex-1 cursor-pointer frosted-button border-white/20 hover:bg-white/20' onClick={onStart}>Re-take Interview</Button>
+        <Button className='flex-1 cursor-pointer frosted-button-dark border-white/20 hover:bg-white/20' variant='outline' onClick={onFeedback}>View Interview</Button>
+         <Button className='flex-1 cursor-pointer frosted-button-dark border-white/20 hover:bg-white/20' onClick={onStart}>Re-take Interview</Button>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -30,11 +30,53 @@ function AddNewInterview() {
   const [jobExperience, setJobExperience] = useState('')
   const [loading, setLoading] = useState(false)
   const [jsonResponse,setJsonResponse] = useState([])
+  const [magnetPosition, setMagnetPosition] = useState({ x: 0, y: 0 })
   const { user } = useUser()
   const router = useRouter()
+  const magnetRef = useRef(null)
   
   // Define ChatSession from Google Generative AI
   const chatSession = new ChatSession('AIzaSyDoEmcJVlSnVvOCZ0lOtX-gBl0xBX2nYCA')
+
+  // Magnet effect logic
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!magnetRef.current) return
+
+      const rect = magnetRef.current.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      )
+      
+      // Magnet effect radius
+      const magnetRadius = 150
+      
+      if (distance < magnetRadius) {
+        const strength = (magnetRadius - distance) / magnetRadius
+        const moveX = (e.clientX - centerX) * strength * 0.5
+        const moveY = (e.clientY - centerY) * strength * 0.5
+        
+        setMagnetPosition({ x: moveX, y: moveY })
+      } else {
+        setMagnetPosition({ x: 0, y: 0 })
+      }
+    }
+
+    const handleMouseLeave = () => {
+      setMagnetPosition({ x: 0, y: 0 })
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseleave', handleMouseLeave)
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseleave', handleMouseLeave)
+    }
+  }, [])
 
   const onSubmit = async(e) => {
     setLoading(true)
@@ -100,8 +142,15 @@ Return ONLY the JSON object above, nothing else.`;
   }
   return (
     <div>
-      <div className=' p-10 rounded-lg shadow-md 
-      hover:shadow-lg transition-all cursor-pointer transition-all'>
+      <div 
+        ref={magnetRef}
+        className='frosted-card p-10 rounded-lg shadow-md 
+        hover:shadow-lg transition-all cursor-pointer transition-all frosted-button-dark'
+        style={{
+          transform: `translate(${magnetPosition.x}px, ${magnetPosition.y}px)`,
+          transition: 'transform 0.1s ease-out'
+        }}
+      >
         <div onClick={() => setOpenDialog(true)} className="cursor-pointer text-center font-bold">
           <SplitText
             text="+ NEW INTERVIEW" 
