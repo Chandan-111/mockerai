@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation'
 function Feedback({params}) {
   const [feedbackList, setFeedbackList] = useState([])
   const [averageRating, setAverageRating] = useState(0)
+  const [isNavigating, setIsNavigating] = useState(false)
   const router=useRouter()
 
   const resolvedParams = React.use(params)
@@ -37,6 +38,11 @@ function Feedback({params}) {
         setAverageRating(Math.round(average * 10) / 10) // Round to 1 decimal place
       }
 
+  }
+
+  const handleGoToDashboard = () => {
+    setIsNavigating(true)
+    router.push('/dashboard')
   }
   useEffect(() => {
     if (resolvedParams?.interviewID) {
@@ -81,7 +87,11 @@ function Feedback({params}) {
     <strong className='text-red-300 text-lg pr-2'>Your Answer : </strong>
     <span className='text-red-200 text-semibold font-medium'>{item.userAns}</span>
   </div>
-  <div className='frosted-glass-dark rounded-lg p-4'>
+  <div className='frosted-glass-dark rounded-lg p-4 mb-4 '>
+    <strong className='text-yellow-300 text-lg pr-2'>Feedback : </strong>
+    <span className='text-yellow-200 text-semibold font-medium'>{item.feedback}</span>
+  </div>
+  <div className='frosted-glass-dark rounded-lg p-4 '>
     <strong className='text-green-300 text-lg pr-2'>Correct Answer : </strong>
     <span className='text-green-200 text-semibold font-medium'>{item.correctAns}</span>
   </div>
@@ -90,9 +100,15 @@ function Feedback({params}) {
 </Collapsible>
       ))}
       </>}
-      <div className='text-center mt-8'>
-        <Button className='frosted-button-dark px-8 py-3 text-lg font-semibold border-white/20 hover:bg-white/20' onClick={()=>router.push('/dashboard')}>Go to Dashboard</Button>
-      </div>
+        <div className='text-center mt-8'>
+          <Button 
+            className='frosted-button-white px-8 py-3 text-lg font-semibold border-black/2 hover:bg-white/20 transition-all duration-300' 
+            onClick={handleGoToDashboard}
+            disabled={isNavigating}
+          >
+            {isNavigating ? 'Loading...' : 'Go to Dashboard'}
+          </Button>
+        </div>
       </div>
   )
 }

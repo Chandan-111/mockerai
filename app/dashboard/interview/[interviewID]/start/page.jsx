@@ -7,11 +7,14 @@ import QuestionsSection from './_components/QuestionsSection'
 import RecordAnswerSection from '@/app/dashboard/_components/RecordAnswerSection'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 function StartInterview({params}) {
   const resolvedParams = React.use(params)
+  const router = useRouter()
   const [interviewData, setInterviewData] = useState()
   const [mockInterviewQuestion, setMockInterviewQuestion] = useState([])
   const [activeQuestionIndex,setActiveQuestionIndex]=useState(0)
+  const [isNavigating, setIsNavigating] = useState(false)
 
   useEffect(() => {
     GetInterviewDetails()
@@ -33,6 +36,11 @@ function StartInterview({params}) {
     setMockInterviewQuestion(Array.isArray(questionsArray) ? questionsArray : [])
     setInterviewData(result[0])
   }
+
+  const handleEndInterview = () => {
+    setIsNavigating(true)
+    router.push(`/dashboard/interview/${interviewData?.mockId}/feedback`)
+  }
   return (
     <div>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-29'>
@@ -50,12 +58,17 @@ function StartInterview({params}) {
 
       </div>
       <div className='flex justify-center gap-2 my-2 mr-98'>
-        {activeQuestionIndex>0 && <Button onClick={()=>setActiveQuestionIndex(activeQuestionIndex-1)}>Previous Question</Button>}
-        {activeQuestionIndex<mockInterviewQuestion.length-1 && <Button onClick={()=>setActiveQuestionIndex(activeQuestionIndex+1)}>Next Question</Button>}
+        {activeQuestionIndex>0 && <Button variant="outline" className='frosted-button-dark hover:bg-white/20' onClick={()=>setActiveQuestionIndex(activeQuestionIndex-1)}>Previous Question</Button>}
+        {activeQuestionIndex<mockInterviewQuestion.length-1 && <Button variant="outline" className='frosted-button-dark hover:bg-white/20' onClick={()=>setActiveQuestionIndex(activeQuestionIndex+1)}>Next Question</Button>}
         {activeQuestionIndex===mockInterviewQuestion.length-1 &&
-         <Link href={'/dashboard/interview/'+interviewData?.mockId+'/feedback'}>
-          <Button>End Interview</Button>
-          </Link>}
+          <Button 
+            variant="outline" 
+            className='frosted-button-dark hover:bg-white/20' 
+            onClick={handleEndInterview}
+            disabled={isNavigating}
+          >
+            {isNavigating ? 'Loading...' : 'End Interview'}
+          </Button>}
       </div>
     </div>
   )
