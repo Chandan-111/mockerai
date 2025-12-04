@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">ai-interview-mocker</string>
-    <string name="title_activity_main">ai-interview-mocker</string>
-    <string name="package_name">com.nexgen.app</string>
-    <string name="custom_url_scheme">com.nexgen.app</string>
-</resources>

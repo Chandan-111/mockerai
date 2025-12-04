@@ -19,8 +19,8 @@ export default function Page() {
         distortion={0.0}
         className="auth-light-rays"
       />
-      <div className="relative z-10">
-        <SignIn />
+      <div className="relative z-10 flex items-center justify-center bg-black">
+        <SignIn className='text-black bg-white' appearance={{ elements: { rootBox: 'w-full max-w-md text-white' } }} />
       </div>
     </div>
   )

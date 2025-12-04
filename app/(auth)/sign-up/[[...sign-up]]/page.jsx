@@ -19,8 +19,8 @@ export default function Page() {
         distortion={0.0}
         className="auth-light-rays"
       />
-      <div className="relative z-10">
-        <SignUp />
+      <div className="relative z-10 flex items-center justify-center">
+        <SignUp appearance={{ elements: { rootBox: 'w-full max-w-md' } }} />
       </div>
     </div>
   )

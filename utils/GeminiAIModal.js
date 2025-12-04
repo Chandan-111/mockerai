@@ -10,7 +10,7 @@ class GeminiAIModal {
     });
   }
 
-  async generateContent(prompt, options = {}) {
+  async generateContent(prompt, options = {}, fileData = null) {
     try {
       const config = {
         thinkingConfig: {
@@ -18,16 +18,24 @@ class GeminiAIModal {
         },
         ...options
       };
-      
+
       const model = 'gemini-flash-latest';
+
+      const parts = [{ text: prompt }];
+
+      if (fileData) {
+        parts.push({
+          inlineData: {
+            mimeType: fileData.mimeType,
+            data: fileData.data
+          }
+        });
+      }
+
       const contents = [
         {
           role: 'user',
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
+          parts: parts,
         },
       ];
 
@@ -59,13 +67,13 @@ class GeminiAIModal {
 async function main() {
   try {
     const gemini = new GeminiAIModal('AIzaSyDoEmcJVlSnVvOCZ0lOtX-gBl0xBX2nYCA');
-    
+
     console.log('🤖 Testing Gemini AI Integration...\n');
-    
+
     // Test simple text generation
     const response = await gemini.generateContent('Explain JavaScript closures in simple terms.');
     console.log('\nResponse:', response);
-    
+
   } catch (error) {
     console.error('Error:', error.message);
   }
@@ -90,17 +98,17 @@ export class ChatSession {
   }
 
   // Send a user message and get AI response
-  async sendMessage(userMessage, options = {}) {
+  async sendMessage(userMessage, fileData = null, options = {}) {
     try {
       // Add user message to conversation
       this.addMessage('user', userMessage);
-      
+
       // Get AI response
-      const response = await this.gemini.generateContent(userMessage, options);
-      
+      const response = await this.gemini.generateContent(userMessage, options, fileData);
+
       // Add AI response to conversation
       this.addMessage('model', response);
-      
+
       return response;
     } catch (error) {
       console.error('Error in chat session:', error);
@@ -125,7 +133,7 @@ export class ChatSession {
 
   // Get conversation as formatted string
   getFormattedHistory() {
-    return this.messages.map(msg => 
+    return this.messages.map(msg =>
       `${msg.role.toUpperCase()}: ${msg.parts[0].text}`
     ).join('\n\n');
   }
