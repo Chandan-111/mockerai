@@ -1,4 +1,3 @@
-```javascript
 "use client";
 import React, { useEffect, useState } from "react";
 import { MeetingProvider } from "@videosdk.live/react-sdk";
@@ -38,4 +37,3 @@ function LiveInterview({ params }) {
 }
 
 export default LiveInterview;
-```
