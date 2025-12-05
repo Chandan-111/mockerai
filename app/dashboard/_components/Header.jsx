@@ -1,13 +1,15 @@
 'use client'
 import { UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation';
 
 function Header() {
   const path = usePathname();
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    console.log(path);
+    setMounted(true);
   }, []);
 
   return (
@@ -29,7 +31,7 @@ function Header() {
           `}>How it works</li>
       </ul>
       <div className='frosted-button rounded-full p-3 flex items-center justify-center w-13 h-10'>
-        <UserButton />
+        {mounted && <UserButton afterSignOutUrl="/sign-in" />}
       </div>
     </div>
   )
