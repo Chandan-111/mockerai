@@ -7,32 +7,32 @@ import React, { useEffect, useState } from 'react'
 import InterviewItemCard from './InterviewItemCard'
 
 function InterviewList() {
-  const {user}=useUser()
-  const [interviewList,setInterviewList] = useState([])
+  const { user } = useUser()
+  const [interviewList, setInterviewList] = useState([])
 
-useEffect(() => {
-  user&&GetInterviewList()
-}, [user])
+  useEffect(() => {
+    user && GetInterviewList()
+  }, [user])
 
   const GetInterviewList = async () => {
     const result = await db.select().from(MockInterview)
-    .where(eq(MockInterview.createdBy,user?.primaryEmailAddress?.emailAddress))
-    .orderBy(desc(MockInterview.id))
+      .where(eq(MockInterview.createdBy, user?.primaryEmailAddress?.emailAddress))
+      .orderBy(desc(MockInterview.id))
     console.log(result)
     setInterviewList(result)
   }
+
   return (
     <div>
-    <div className=' rounded-xl p-6 mb-6'>
-      <h2 className='text-3xl font-bold text-white'>Previous Interviews</h2>
-    </div>
+      <div className=' rounded-xl p-6 mb-6'>
+        <h2 className='text-3xl font-bold text-white'>Previous Interviews</h2>
+      </div>
 
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5'>
-      {interviewList&&interviewList.map((interview,index)=>(
-        <InterviewItemCard key={index} interview={interview}/>
-      ))}
-
-        </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5'>
+        {interviewList && interviewList.map((interview, index) => (
+          <InterviewItemCard key={index} interview={interview} onDelete={GetInterviewList} />
+        ))}
+      </div>
     </div>
   )
 }
